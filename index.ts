@@ -4,9 +4,10 @@ const port = 4000;
 
 import {log} from './src/app';
 
-app.get('/', (req, res) => {
+app.get('/*', (req, res) => {
   log('123');
-  res.send('Hello World! xddd');
+  res.status(200)
+    .json({ test: '123123 super' });
 });
 
 app.listen(port, () => {
