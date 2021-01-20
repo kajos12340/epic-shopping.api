@@ -10,6 +10,7 @@ const headerSetupMiddleware = (req: Request, res: Response, next: Function) => {
 
   if (req.method === 'OPTIONS') {
     res.status(200).send();
+    return;
   }
 
   next();
