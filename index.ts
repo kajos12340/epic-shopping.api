@@ -1,8 +1,11 @@
-const express = require('express');
+import express from "express";
 const app = express();
 const port = process.env.PORT || 4000;
 
-import {log} from './src/app';
+import headerSetupMiddleware from "./src/middlewares/headerSetupMiddleware";
+import { log } from './src/app';
+
+app.use(headerSetupMiddleware);
 
 app.get('/*', (req, res) => {
   log('123');
@@ -13,3 +16,6 @@ app.get('/*', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
+
+
+

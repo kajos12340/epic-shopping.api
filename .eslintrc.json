@@ -6,12 +6,15 @@
   ],
   "settings": {
     "import/resolver": {
-      "typescript": {}
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
     }
   },
   "rules": {
     "node/no-unsupported-features/es-syntax": "off",
-    "semi": 2
+    "semi": 2,
+    "node/no-missing-import": "off"
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
