@@ -1,5 +1,6 @@
 {
   "verbose": true,
   "watch": ["src", "index.ts"],
-  "exec": "ts-node ./index.ts"
+  "exec": "ts-node ./index.ts",
+  "ext": "ts"
 }

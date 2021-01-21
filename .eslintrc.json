@@ -14,7 +14,8 @@
   "rules": {
     "node/no-unsupported-features/es-syntax": "off",
     "semi": 2,
-    "node/no-missing-import": "off"
+    "node/no-missing-import": "off",
+    "class-methods-use-this": "off"
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
