@@ -1,4 +1,6 @@
 import express, { Application, RequestHandler, ErrorRequestHandler } from 'express';
+import mongoose from 'mongoose';
+
 import IController from "./interfaces/IController";
 
 interface IAppSettings {
@@ -41,8 +43,17 @@ class App {
   }
 
   public run() {
-    console.log('Listening on: ', this.port);
-    this.app.listen(this.port);
+    mongoose.connect(`mongodb+srv://liftit:${process.env.MONGO_DB_PASSWORD}@cluster0-1gapf.mongodb.net/shopper?retryWrites=true&w=majority`,
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      })
+      .then(() => {
+        console.log('Mongoose connected! App running on ', this.port);
+        this.app.listen(this.port);
+      }).catch(err => {
+      console.log('Moongoose connection error: ', err);
+    });
   }
 }
 

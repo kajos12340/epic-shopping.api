@@ -15,6 +15,7 @@ console.log('process.env.JWT_SECRET', process.env.JWT_SECRET);
 
 const allowedAnonymousRoutes = [
   '/auth/login',
+  '/auth/register',
 ];
 
 const app = new App({
