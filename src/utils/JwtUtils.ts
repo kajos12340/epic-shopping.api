@@ -4,7 +4,6 @@ class JwtUtils {
   private readonly secretKey: string;
 
   public static createToken(login: string) {
-    console.log('process.env.JWT_SECRET', process.env.JWT_SECRET);
     return jwt.sign({
       login,
     },
