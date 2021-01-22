@@ -18,8 +18,6 @@ class App {
     this.setupMiddlewares(appSettings.middlewares);
     this.setupControllers(appSettings.controllers);
     this.setupErrorMiddleware(appSettings.errorMiddlewares);
-
-    this.connect();
   }
 
   private setupMiddlewares(middlewares: RequestHandler[]) {
@@ -42,7 +40,7 @@ class App {
     );
   }
 
-  private connect() {
+  public run() {
     console.log('Listening on: ', this.port);
     this.app.listen(this.port);
   }

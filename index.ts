@@ -1,11 +1,21 @@
 import bodyParser from "body-parser";
+import dotenv from 'dotenv';
 
-import App from './src/app';
+import App from './src/App';
 
-import AuthController from "./src/controllers/AuthController";
+import AuthController from "./src/controllers/AuthController/AuthController";
 
-import headerSetupMiddleware from "./src/middlewares/headerSetupMiddleware";
-import errorMiddleware from "./src/middlewares/errorMiddleware";
+import HeaderSetupMiddleware from "./src/middlewares/HeaderSetupMiddleware";
+import ErrorMiddleware from "./src/middlewares/ErrorMiddleware";
+import AuthenticationMiddleware from './src/middlewares/AuthenticationMiddleware';
+
+dotenv.config();
+
+console.log('process.env.JWT_SECRET', process.env.JWT_SECRET);
+
+const allowedAnonymousRoutes = [
+  '/auth/login',
+];
 
 const app = new App({
   middlewares: [
@@ -13,26 +23,15 @@ const app = new App({
       extended: true,
     }),
     bodyParser.json(),
-    headerSetupMiddleware,
+    HeaderSetupMiddleware,
+    AuthenticationMiddleware(allowedAnonymousRoutes),
   ],
   controllers: [
     new AuthController(),
   ],
   errorMiddlewares: [
-    errorMiddleware,
+    ErrorMiddleware,
   ]
 });
 
-// app.use(headerSetupMiddleware);
-//
-// app.get('/*', (req, res) => {
-//   res.status(200)
-//     .json({ test: '123123 super' });
-// });
-//
-// app.listen(port, () => {
-//   console.log(`Example app listening at http://localhost:${port}`);
-// });
-
-
-
+app.run();

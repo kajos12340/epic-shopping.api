@@ -1,9 +1,11 @@
 import { Router, Request, Response } from "express";
-import IController from "../interfaces/IController";
+
+import IController from "../../interfaces/IController";
+import JwtUtils from '../../utils/JwtUtils';
 
 class AuthController implements IController{
-  path = '/auth';
-  router = Router();
+  public path = '/auth';
+  public router = Router();
 
   constructor() {
     this.initRoutes();
@@ -15,12 +17,12 @@ class AuthController implements IController{
     this.router.post('/login', this.login);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private login(req: Request, res: Response) {
     const { login, password } = req.body;
     console.log('POST: login', login, password);
+    const token = JwtUtils.createToken(login);
     res.status(200).json({
-      token: 'hehehehehehehehe'
+      token,
     });
   }
 
