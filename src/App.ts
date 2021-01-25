@@ -24,8 +24,7 @@ class App {
     this.server = http.createServer(this.app);
     this.socketServer = new Server(this.server, {
       cors: {
-        origin: "http://localhost:3000",
-        methods: ["GET", "POST", "OPTIONS", "PUT", "PATCH"]
+        origin: "*",
       }
     });
 
