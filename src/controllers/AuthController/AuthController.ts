@@ -30,7 +30,7 @@ class AuthController implements IController{
         throw new Error('NO_USER');
       }
 
-      const token = JwtUtils.createToken(user.login);
+      const token = JwtUtils.createToken(user.login, user._id);
       res.status(200).json({
         token,
       });

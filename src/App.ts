@@ -2,23 +2,39 @@ import express, { Application, RequestHandler, ErrorRequestHandler } from 'expre
 import mongoose from 'mongoose';
 
 import IController from "./interfaces/IController";
+import ISocketController from './interfaces/ISocketConroller';
+
+import http from 'http';
+import socketIo, {Server} from 'socket.io';
 
 interface IAppSettings {
   middlewares: RequestHandler[],
   controllers: IController[],
+  socketControllers: any[],
   errorMiddlewares: ErrorRequestHandler[],
 }
 
 class App {
+  public server: any;
   public app: Application;
+  public socketServer: Server;
   public port: number;
 
   constructor(appSettings: IAppSettings) {
     this.app = express();
+    this.server = http.createServer(this.app);
+    this.socketServer = new Server(this.server, {
+      cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST", "OPTIONS", "PUT", "PATCH"]
+      }
+    });
+
     this.port = process.env.PORT ? +process.env.PORT : 4000;
 
     this.setupMiddlewares(appSettings.middlewares);
     this.setupControllers(appSettings.controllers);
+    this.setupSocketControllers(appSettings.socketControllers);
     this.setupErrorMiddleware(appSettings.errorMiddlewares);
   }
 
@@ -33,6 +49,10 @@ class App {
     controllers.forEach(controller => {
       this.app.use(controller.path, controller.router);
     });
+  }
+
+  private setupSocketControllers(socketControllers: any[]) {
+    socketControllers.forEach(Controller => new Controller(this.socketServer));
   }
 
   private setupErrorMiddleware(errorMiddlewares: ErrorRequestHandler[]) {
@@ -50,7 +70,8 @@ class App {
       })
       .then(() => {
         console.log('Mongoose connected! App running on ', this.port);
-        this.app.listen(this.port);
+
+        this.server.listen(this.port);
       }).catch(err => {
       console.log('Moongoose connection error: ', err);
     });

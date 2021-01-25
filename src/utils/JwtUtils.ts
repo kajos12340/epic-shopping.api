@@ -1,11 +1,10 @@
 import jwt from 'jsonwebtoken';
 
 class JwtUtils {
-  private readonly secretKey: string;
-
-  public static createToken(login: string) {
+  public static createToken(login: string, id: string) {
     return jwt.sign({
       login,
+      id,
     },
       process.env.JWT_SECRET,
       {
