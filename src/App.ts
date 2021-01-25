@@ -2,10 +2,9 @@ import express, { Application, RequestHandler, ErrorRequestHandler } from 'expre
 import mongoose from 'mongoose';
 
 import IController from "./interfaces/IController";
-import ISocketController from './interfaces/ISocketConroller';
 
 import http from 'http';
-import socketIo, {Server} from 'socket.io';
+import {Server} from 'socket.io';
 
 interface IAppSettings {
   middlewares: RequestHandler[],
