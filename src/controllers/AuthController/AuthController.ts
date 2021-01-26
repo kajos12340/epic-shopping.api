@@ -13,8 +13,6 @@ class AuthController implements IController{
   }
 
   initRoutes() {
-    this.router.get('/user-data', this.getUserData);
-
     this.router.post('/login', this.login);
 
     this.router.post('/register', this.register);
@@ -33,9 +31,11 @@ class AuthController implements IController{
       const token = JwtUtils.createToken(user.login, user._id);
       res.status(200).json({
         token,
+        email: user.email,
+        id: user._id,
+        login: user.login,
       });
     } catch (e) {
-      console.log(e.message);
       let message = "Could not log in the user!";
       let statusCode = 400;
       if (e.message === 'NO_USER') {
@@ -51,20 +51,20 @@ class AuthController implements IController{
     }
   }
 
-  private getUserData(req: Request, res: Response) {
-    // TODO
-  }
-
   private async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const { login, password,  } = req.body;
-      console.log('POST: register', login, password);
+      const { login, password, email, repassword } = req.body;
 
       const currentDate = new Date();
+
+      if (password !== repassword) {
+        throw new Error("PASSWORD_DONT_MATCH");
+      }
 
       const user = await User.register({
         password,
         login,
+        email,
         registrationDate: currentDate,
       });
 
@@ -74,9 +74,11 @@ class AuthController implements IController{
     } catch (e) {
       let message = "Could not register the user!";
       let statusCode = 400;
-      if (e.message.includes('E11000')) {
+      if (e.message === 'PASSWORD_DONT_MATCH') {
+        message = "Passwords must be the same.";
+      } else if (e.message.includes('E11000')) {
         statusCode = 409;
-        message = "User with given login already exists.";
+        message = "User with given login or email already exists.";
       }
 
       next({

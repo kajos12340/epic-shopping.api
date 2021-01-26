@@ -25,8 +25,6 @@ class AuthController implements ISocketController {
       console.log("New client connected");
     });
   }
-
-
 }
 
 export default AuthController;

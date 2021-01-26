@@ -4,6 +4,7 @@ import Crypto from 'crypto-js';
 export interface IUser {
   login: string,
   password: string,
+  email: string,
   registrationDate: Date,
   lastLoginDate?: Date,
 }
@@ -26,6 +27,12 @@ const userSchema = new Schema<IUserDocument, IUserModel>({
     type: String,
     required: true,
     maxlength: 100,
+  },
+  email: {
+    type: String,
+    required: true,
+    maxlength: 100,
+    unique: true,
   },
   registrationDate: {
     type: Date,
