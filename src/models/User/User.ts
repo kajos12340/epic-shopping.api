@@ -7,6 +7,7 @@ export interface IUser {
   email: string,
   registrationDate: Date,
   lastLoginDate?: Date,
+  isConfirmed?: Date,
 }
 
 interface IUserDocument extends IUser, Document { }
@@ -40,6 +41,9 @@ const userSchema = new Schema<IUserDocument, IUserModel>({
   },
   lastLoginDate: {
     type: Date,
+  },
+  isConfirmed: {
+    type: Boolean,
   },
 });
 
