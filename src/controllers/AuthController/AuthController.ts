@@ -13,6 +13,8 @@ class AuthController implements IController{
   }
 
   initRoutes() {
+    this.router.get('/get-user-data', this.getUserData);
+
     this.router.post('/login', this.login);
 
     this.router.post('/register', this.register);
@@ -47,6 +49,31 @@ class AuthController implements IController{
         statusCode,
         data: e,
         message,
+      });
+    }
+  }
+
+  private async getUserData(req: Request, res: Response, next: NextFunction) {
+    try {
+      const token = req.headers.authorization;
+      const userId = JwtUtils.getUserId(token);
+
+      const user = await User.findById(userId);
+
+      if (!user) {
+        throw new Error('NO_USER');
+      }
+
+      res.status(200).json({
+        email: user.email,
+        id: user._id,
+        login: user.login,
+      });
+    } catch (e) {
+      next({
+        statusCode: 400,
+        data: e,
+        message: 'No user for given token',
       });
     }
   }

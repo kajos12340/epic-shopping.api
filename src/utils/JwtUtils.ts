@@ -15,6 +15,10 @@ class JwtUtils {
   public static verifyToken(token: string): boolean {
     return jwt.verify(token, process.env.JWT_SECRET);
   }
+
+  public static getUserId(token: string): string {
+    return jwt.decode(token.split(' ')[1])?.id;
+  }
 }
 
 export default JwtUtils;
