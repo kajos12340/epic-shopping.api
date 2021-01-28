@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { Server } from "socket.io";
+import moment from 'moment';
 
 import ISocketController from "../../interfaces/ISocketConroller";
 import Message from "../../models/Message/Message";
@@ -40,7 +41,7 @@ class MessagesController implements ISocketController {
 
         const newMessage = new Message({
           author: new mongoose.Types.ObjectId(userId),
-          date: new Date(),
+          date: moment().toDate(),
           text,
         });
         await newMessage.save();

@@ -1,4 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
+import moment from "moment";
 
 import IController from "../../interfaces/IController";
 import JwtUtils from '../../utils/JwtUtils';
@@ -82,8 +83,6 @@ class AuthController implements IController{
     try {
       const { login, password, email, repassword } = req.body;
 
-      const currentDate = new Date();
-
       if (password !== repassword) {
         throw new Error("PASSWORD_DONT_MATCH");
       }
@@ -92,7 +91,7 @@ class AuthController implements IController{
         password,
         login,
         email,
-        registrationDate: currentDate,
+        registrationDate: moment().toDate(),
         color: Math.floor(Math.random()*16777215).toString(16),
       });
 

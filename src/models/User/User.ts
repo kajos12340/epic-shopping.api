@@ -1,5 +1,6 @@
-import mongose, {Schema, Document, Model, Promise, Query} from "mongoose";
+import mongose, { Schema, Document, Model, Promise } from "mongoose";
 import Crypto from 'crypto-js';
+import moment from "moment";
 
 import {IMessage} from "../Message/Message";
 
@@ -22,7 +23,7 @@ export interface IUserModel extends Model<IUserDocument> {
   login?: string,
 }
 
-const userSchema = new Schema<IUserDocument, IUserModel>({
+const userSchema = new Schema<IUserDocument>({
   login: {
     type: String,
     required: true,
@@ -65,7 +66,7 @@ userSchema.statics.logIn = function(login: string, password: string): IUser {
     return this.findOneAndUpdate({
       login,
       password: hashedPassword,
-    }, { lastLoginDate: new Date() });
+    }, { lastLoginDate: moment().toDate() });
 };
 
 userSchema.statics.register = function(userData: IUser): Promise<IUserDocument> {
