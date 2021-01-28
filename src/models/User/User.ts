@@ -1,5 +1,7 @@
-import moongose, {Schema, Document, Model, Promise, Query} from "mongoose";
+import mongose, {Schema, Document, Model, Promise, Query} from "mongoose";
 import Crypto from 'crypto-js';
+
+import {IMessage} from "../Message/Message";
 
 export interface IUser {
   login: string,
@@ -8,6 +10,8 @@ export interface IUser {
   registrationDate: Date,
   lastLoginDate?: Date,
   isConfirmed?: Date,
+  messages?: IMessage[],
+  color: string,
 }
 
 interface IUserDocument extends IUser, Document { }
@@ -15,24 +19,25 @@ interface IUserDocument extends IUser, Document { }
 export interface IUserModel extends Model<IUserDocument> {
   logIn: (login: string, password: string) => Promise<IUserDocument>,
   register: (userData: IUser) => Promise<IUserDocument>,
+  login?: string,
 }
 
 const userSchema = new Schema<IUserDocument, IUserModel>({
   login: {
     type: String,
     required: true,
-    maxlength: 50,
+    maxlength: 20,
     unique: true,
   },
   password: {
     type: String,
     required: true,
-    maxlength: 100,
+    maxlength: 50,
   },
   email: {
     type: String,
     required: true,
-    maxlength: 100,
+    maxlength: 20,
     unique: true,
   },
   registrationDate: {
@@ -45,14 +50,22 @@ const userSchema = new Schema<IUserDocument, IUserModel>({
   isConfirmed: {
     type: Boolean,
   },
+  messages: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Message',
+  }],
+  color: {
+    required: true,
+    type: String,
+  }
 });
 
-userSchema.statics.logIn = function(login: string, password: string): Query<IUserDocument, IUserDocument> {
+userSchema.statics.logIn = function(login: string, password: string): IUser {
     const hashedPassword = Crypto.SHA256(password).toString(Crypto.enc.Base64);
-    return this.findOne({
+    return this.findOneAndUpdate({
       login,
       password: hashedPassword,
-    });
+    }, { lastLoginDate: new Date() });
 };
 
 userSchema.statics.register = function(userData: IUser): Promise<IUserDocument> {
@@ -66,4 +79,4 @@ userSchema.statics.register = function(userData: IUser): Promise<IUserDocument> 
   return user.save();
 };
 
-export default moongose.model<IUserDocument, IUserModel>('User', userSchema);
+export default mongose.model<IUserDocument, IUserModel>('User', userSchema);

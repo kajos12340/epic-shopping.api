@@ -6,14 +6,13 @@ import App from './src/App';
 import AuthController from "./src/controllers/AuthController/AuthController";
 
 import ShoppingListController from './src/controllers/ShoppingListController/ShoppingListController';
+import MessagesController from "./src/controllers/MessagesController/MessagesController";
 
 import HeaderSetupMiddleware from "./src/middlewares/HeaderSetupMiddleware";
 import ErrorMiddleware from "./src/middlewares/ErrorMiddleware";
 import AuthenticationMiddleware from './src/middlewares/AuthenticationMiddleware';
 
 dotenv.config();
-
-console.log('process.env.JWT_SECRET', process.env.JWT_SECRET);
 
 const allowedAnonymousRoutes = [
   '/auth/login',
@@ -35,6 +34,7 @@ const app = new App({
   ],
   socketControllers: [
     ShoppingListController,
+    MessagesController,
   ],
   errorMiddlewares: [
     ErrorMiddleware,

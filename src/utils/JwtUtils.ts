@@ -17,7 +17,8 @@ class JwtUtils {
   }
 
   public static getUserId(token: string): string {
-    return jwt.decode(token.split(' ')[1])?.id;
+    const parsedToken = token.includes(' ') ? token.split(' ')[1] : token;
+    return jwt.decode(parsedToken)?.id;
   }
 }
 
