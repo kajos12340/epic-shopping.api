@@ -30,7 +30,6 @@ class MessagesController implements ISocketController {
       await Message.removeAllFromBeforeToday();
 
       socket.on("getMessages", async () => {
-        console.log('getMessages');
         const userId = SocketUtils.getUserId(socket);
         const messages = await Message.getMessagesWithAuthors(userId);
         this.socketServer.emit('messagesList', messages);
@@ -47,7 +46,6 @@ class MessagesController implements ISocketController {
         await newMessage.save();
 
         const messages = await Message.getMessagesWithAuthors(userId);
-        console.log('emisja messagesList!', messages.length);
         this.socketServer.emit('messagesList', messages);
       });
     });
