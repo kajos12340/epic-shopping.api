@@ -1,8 +1,14 @@
-import mongose, { Schema, Document, Model, Promise } from "mongoose";
+import mongose, { Schema, Document, Model } from "mongoose";
 import Crypto from 'crypto-js';
 import moment from "moment";
 
 import {IMessage} from "../Message/Message";
+
+interface ISimpleUser {
+  login: string,
+  registrationDate: Date,
+  isConfirmed?: Date,
+}
 
 export interface IUser {
   login: string,
@@ -20,7 +26,7 @@ interface IUserDocument extends IUser, Document { }
 export interface IUserModel extends Model<IUserDocument> {
   logIn: (login: string, password: string) => Promise<IUserDocument>,
   register: (userData: IUser) => Promise<IUserDocument>,
-  login?: string,
+  getAllUserBasicData: () => Promise<ISimpleUser[]>,
 }
 
 const userSchema = new Schema<IUserDocument>({
@@ -78,6 +84,21 @@ userSchema.statics.register = function(userData: IUser): Promise<IUserDocument> 
   });
 
   return user.save();
+};
+
+userSchema.statics.getAllUserBasicData = async function(): Promise<ISimpleUser[]> {
+  let users = await this
+    .find()
+    .collation({locale: "en" })
+    .sort('login')
+    .lean();
+  users = users.map(user => ({
+    login: user.login,
+    registrationDate: moment(user.registrationDate).format('MM.DD.YYYY HH:mm'),
+    isConfirmed: user.isConfirmed,
+  }));
+
+  return users;
 };
 
 export default mongose.model<IUserDocument, IUserModel>('User', userSchema);

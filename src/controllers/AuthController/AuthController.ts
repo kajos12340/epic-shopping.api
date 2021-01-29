@@ -14,6 +14,8 @@ class AuthController implements IController{
   }
 
   initRoutes() {
+    this.router.get('/get-users', this.getAllUsers);
+
     this.router.get('/get-user-data', this.getUserData);
 
     this.router.post('/login', this.login);
@@ -54,6 +56,20 @@ class AuthController implements IController{
     }
   }
 
+  private async getAllUsers(req: Request, res: Response, next: NextFunction) {
+    try {
+      const users = await User.getAllUserBasicData();
+
+      res.status(200).json({ users });
+    } catch (e) {
+      next({
+        statusCode: 400,
+        data: e,
+        message: 'No user for given token',
+      });
+    }
+  }
+
   private async getUserData(req: Request, res: Response, next: NextFunction) {
     try {
       const token = req.headers.authorization;
@@ -69,6 +85,9 @@ class AuthController implements IController{
         email: user.email,
         id: user._id,
         login: user.login,
+        registrationDate: user.registrationDate,
+        lastLoginDate: user.lastLoginDate,
+        isConfirmed: user.isConfirmed,
       });
     } catch (e) {
       next({
