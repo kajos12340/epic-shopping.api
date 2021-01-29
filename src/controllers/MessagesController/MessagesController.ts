@@ -47,6 +47,7 @@ class MessagesController implements ISocketController {
 
         const messages = await Message.getMessagesWithAuthors(userId);
         this.socketServer.emit('messagesList', messages);
+        this.socketServer.emit('newMessage', true);
       });
     });
   }
