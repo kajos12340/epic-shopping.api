@@ -8,7 +8,7 @@ class JwtUtils {
     },
       process.env.JWT_SECRET,
       {
-      expiresIn: '1d',
+      expiresIn: '1y',
     });
   }
 
