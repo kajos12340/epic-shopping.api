@@ -1,11 +1,11 @@
-import mongoose, {Schema, Document, Model, Query} from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
 import moment from 'moment';
 
-import User, {IUser, IUserModel} from "../User/User";
+import User, { IUserModel } from "../User/User";
 
 export interface IMessage {
   date: Date,
-  author?: IUserModel,
+  author?: IUserModel | string,
   text: String,
 }
 

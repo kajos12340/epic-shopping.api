@@ -9,11 +9,9 @@ import SocketUtils from "../../utils/SocketUtils";
 
 class MessagesController implements ISocketController {
   public socketServer: Server;
-  private clients: string[];
 
   constructor(socketServer: Server) {
     this.socketServer = socketServer;
-    this.clients = [];
 
     this.initSocketActions();
   }

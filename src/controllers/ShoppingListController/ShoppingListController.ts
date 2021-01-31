@@ -1,21 +1,96 @@
 import { Server } from "socket.io";
+import mongoose from 'mongoose';
+import moment from "moment";
 
 import ISocketController from "../../interfaces/ISocketConroller";
+import JwtUtils from "../../utils/JwtUtils";
+import ShoppingList from "../../models/ShoppingList/ShoppingList";
+import SocketUtils from "../../utils/SocketUtils";
+import Product from "../../models/Product/Product";
+import User from "../../models/User/User";
 
 class ShoppingListController implements ISocketController {
   public socketServer: Server;
-  private clients: string[];
 
   constructor(socketServer: Server) {
     this.socketServer = socketServer;
-    this.clients = [];
 
     this.initSocketActions();
   }
 
   public initSocketActions() {
-    this.socketServer.on("connect", (socket) => {
+    this.socketServer.use((socket, next) => {
+      const { token } = socket.handshake.auth as { token: string };
+      if (!JwtUtils.verifyToken(token)) {
+        return;
+      }
+      next();
+    });
+    this.socketServer.on("connection", (socket) => {
+      socket.on('getLists', async () => {
+        const lists = await ShoppingList.getSimpleLists();
+        this.socketServer.emit('shoppingLists', lists);
+      });
 
+      socket.on('addList', async (data) => {
+        const userId = SocketUtils.getUserId(socket);
+
+        const newShoppingList = new ShoppingList({
+          author: new mongoose.Types.ObjectId(userId),
+          creationDate: moment().toDate(),
+          name: data.name,
+        });
+        await newShoppingList.save();
+
+        const lists = await ShoppingList.getSimpleLists();
+        this.socketServer.emit('shoppingLists', lists);
+      });
+
+      socket.on('addProduct', async (data) => {
+        await Product.addNewProduct(data);
+
+        const products = await ShoppingList.getProducts(data.shoppingListId);
+        console.log('emit products from add', products);
+        this.socketServer.emit('products', products);
+
+        const lists = await ShoppingList.getSimpleLists();
+        this.socketServer.to(data.shoppingListId).emit('shoppingLists', lists);
+      });
+
+      socket.on('getProducts', async (listId) => {
+        socket.join(listId);
+
+        const products = await ShoppingList.getProducts(listId);
+        this.socketServer.to(listId).emit('products', products);
+      });
+
+      socket.on('removeProduct', async (data) => {
+        await Product.removeProduct(data.listId, data.productId);
+
+        const products = await ShoppingList.getProducts(data.listId);
+        this.socketServer.to(data.listId).emit('products', products);
+
+        const lists = await ShoppingList.getSimpleLists();
+        this.socketServer.to(data.listId).emit('shoppingLists', lists);
+      });
+
+      socket.on('changeInCartState', async (data) => {
+        await Product.updateInCartStatus(data.productId, data.newValue);
+
+        const products = await ShoppingList.getProducts(data.listId);
+        this.socketServer.to(data.listId).emit('products', products);
+      });
+
+      socket.on('closeList', async (id) => {
+        const userId = SocketUtils.getUserId(socket);
+        const user = await User.findById(userId)
+        await ShoppingList.closeList(id);
+
+        this.socketServer.to(id).emit('listClosed', user.login);
+
+        const lists = await ShoppingList.getSimpleLists();
+        this.socketServer.to(id).emit('shoppingLists', lists);
+      });
     });
   }
 }
