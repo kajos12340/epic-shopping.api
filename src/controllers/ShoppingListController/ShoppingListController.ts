@@ -55,7 +55,6 @@ class ShoppingListController implements ISocketController {
         await Product.addNewProduct(data);
 
         const products = await ShoppingList.getProducts(data.shoppingListId);
-        console.log('emit products from add', products);
         this.socketServer.emit('products', products);
 
         const lists = await ShoppingList.getSimpleLists();
