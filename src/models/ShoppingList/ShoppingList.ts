@@ -17,6 +17,7 @@ export interface IShoppingListModel extends Model<IShoppingListDocument> {
   getSimpleLists(): Promise<{}[]>,
   closeList(id: string): Promise<boolean>,
   getProducts(id: string): Promise<{}[]>,
+  getSimpleList(id: string): Promise<{}>,
 }
 
 const shoppingListSchema = new Schema<IShoppingListDocument>({
@@ -69,6 +70,19 @@ shoppingListSchema.statics.getSimpleLists = async function() {
     ...list,
     productsNumber: list.products?.length,
   }));
+};
+
+shoppingListSchema.statics.getSimpleList = async function(id) {
+  const list = await this
+    .findById(id)
+    .populate('author', 'login')
+    .select(['creationDate', 'author', 'name', 'isActive'])
+    .lean();
+
+  return {
+    ...list,
+    productsNumber: list.products?.length,
+  };
 };
 
 export default mongoose.model<IShoppingListDocument, IShoppingListModel>('ShoppingList', shoppingListSchema);

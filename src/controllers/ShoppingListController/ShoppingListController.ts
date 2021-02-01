@@ -32,6 +32,11 @@ class ShoppingListController implements ISocketController {
         this.socketServer.emit('shoppingLists', lists);
       });
 
+      socket.on('getList', async (id) => {
+        const list = await ShoppingList.getSimpleList(id);
+        this.socketServer.emit('shoppingList', list);
+      });
+
       socket.on('addList', async (data) => {
         const userId = SocketUtils.getUserId(socket);
 
@@ -83,7 +88,7 @@ class ShoppingListController implements ISocketController {
 
       socket.on('closeList', async (id) => {
         const userId = SocketUtils.getUserId(socket);
-        const user = await User.findById(userId)
+        const user = await User.findById(userId);
         await ShoppingList.closeList(id);
 
         this.socketServer.to(id).emit('listClosed', user.login);
