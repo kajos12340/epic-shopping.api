@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
-import UnitEnum from '../../enums/UnitEnum';
-import ShoppingList from '../ShoppingList/ShoppingList';
+import UnitEnum from '../enums/UnitEnum';
+import ShoppingList from './ShoppingList';
 
 export interface IProduct extends Document{
   shoppingList: string,

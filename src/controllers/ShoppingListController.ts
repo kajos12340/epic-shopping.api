@@ -2,12 +2,12 @@ import { Server } from 'socket.io';
 import mongoose from 'mongoose';
 import moment from 'moment';
 
-import ISocketController from '../../interfaces/ISocketConroller';
-import authorizedSocketMiddleware from '../../middlewares/AuthorizedSocketMiddleware';
-import ShoppingList from '../../models/ShoppingList/ShoppingList';
-import SocketUtils from '../../utils/SocketUtils';
-import Product from '../../models/Product/Product';
-import User from '../../models/User/User';
+import ISocketController from '../interfaces/ISocketConroller';
+import authorizedSocketMiddleware from '../middlewares/AuthorizedSocketMiddleware';
+import ShoppingList from '../models/ShoppingList';
+import SocketUtils from '../utils/SocketUtils';
+import Product from '../models/Product';
+import User from '../models/User';
 
 class ShoppingListController implements ISocketController {
   public socketServer: Server;

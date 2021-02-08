@@ -1,15 +1,15 @@
-import bodyParser from "body-parser";
+import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
 import App from './src/App';
 
-import AuthController from "./src/controllers/AuthController/AuthController";
+import AuthController from './src/controllers/AuthController';
 
-import ShoppingListController from './src/controllers/ShoppingListController/ShoppingListController';
-import MessagesController from "./src/controllers/MessagesController/MessagesController";
+import ShoppingListController from './src/controllers/ShoppingListController';
+import MessagesController from './src/controllers/MessagesController';
 
-import HeaderSetupMiddleware from "./src/middlewares/HeaderSetupMiddleware";
-import ErrorMiddleware from "./src/middlewares/ErrorMiddleware";
+import HeaderSetupMiddleware from './src/middlewares/HeaderSetupMiddleware';
+import ErrorMiddleware from './src/middlewares/ErrorMiddleware';
 import AuthenticationMiddleware from './src/middlewares/AuthenticationMiddleware';
 
 dotenv.config();
@@ -17,7 +17,7 @@ dotenv.config();
 const allowedAnonymousRoutes = [
   '/auth/login',
   '/auth/register',
-  '/test'
+  '/test',
 ];
 
 const app = new App({
@@ -38,7 +38,7 @@ const app = new App({
   ],
   errorMiddlewares: [
     ErrorMiddleware,
-  ]
+  ],
 });
 
 app.run();

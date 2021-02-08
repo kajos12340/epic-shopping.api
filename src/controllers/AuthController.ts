@@ -3,9 +3,9 @@ import {
 } from 'express';
 import moment from 'moment';
 
-import IController from '../../interfaces/IController';
-import JwtUtils from '../../utils/JwtUtils';
-import User from '../../models/User/User';
+import IController from '../interfaces/IController';
+import JwtUtils from '../utils/JwtUtils';
+import User from '../models/User';
 
 class AuthController implements IController {
   public path = '/auth';

@@ -2,7 +2,7 @@ import mongose, { Schema, Document, Model } from 'mongoose';
 import Crypto from 'crypto-js';
 import moment from 'moment';
 
-import { IMessage } from '../Message/Message';
+import { IMessage } from './Message';
 
 interface ISimpleUser {
   login: string,

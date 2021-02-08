@@ -2,10 +2,10 @@ import mongoose from 'mongoose';
 import { Server } from 'socket.io';
 import moment from 'moment';
 
-import ISocketController from '../../interfaces/ISocketConroller';
-import Message from '../../models/Message/Message';
-import SocketUtils from '../../utils/SocketUtils';
-import authorizedSocketMiddleware from '../../middlewares/AuthorizedSocketMiddleware';
+import ISocketController from '../interfaces/ISocketConroller';
+import Message from '../models/Message';
+import SocketUtils from '../utils/SocketUtils';
+import authorizedSocketMiddleware from '../middlewares/AuthorizedSocketMiddleware';
 
 class MessagesController implements ISocketController {
   public socketServer: Server;

@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
-import { IUserModel } from '../User/User';
-import { IProduct } from '../Product/Product';
+import { IUserModel } from './User';
+import { IProduct } from './Product';
 
 export interface IShoppingList {
   creationDate: Date,

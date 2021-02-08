@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 import moment from 'moment';
 
-import User, { IUserModel } from '../User/User';
+import User, { IUserModel } from './User';
 
 export interface IMessage {
   date: Date,
