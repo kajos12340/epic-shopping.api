@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
-import { Server } from "socket.io";
+import { Server } from 'socket.io';
 import moment from 'moment';
 
-import ISocketController from "../../interfaces/ISocketConroller";
-import Message from "../../models/Message/Message";
-import JwtUtils from "../../utils/JwtUtils";
-import SocketUtils from "../../utils/SocketUtils";
+import ISocketController from '../../interfaces/ISocketConroller';
+import Message from '../../models/Message/Message';
+import SocketUtils from '../../utils/SocketUtils';
+import authorizedSocketMiddleware from '../../middlewares/AuthorizedSocketMiddleware';
 
 class MessagesController implements ISocketController {
   public socketServer: Server;
@@ -17,17 +17,11 @@ class MessagesController implements ISocketController {
   }
 
   public initSocketActions() {
-    this.socketServer.use((socket, next) => {
-      const { token } = socket.handshake.auth as { token: string };
-      if (!JwtUtils.verifyToken(token)) {
-        return;
-      }
-      next();
-    });
-    this.socketServer.on("connection", async (socket) => {
+    this.socketServer.use(authorizedSocketMiddleware);
+    this.socketServer.on('connection', async (socket) => {
       await Message.removeAllFromBeforeToday();
 
-      socket.on("getMessages", async () => {
+      socket.on('getMessages', async () => {
         const userId = SocketUtils.getUserId(socket);
         const messages = await Message.getMessagesWithAuthors(userId);
         this.socketServer.emit('messagesList', messages);

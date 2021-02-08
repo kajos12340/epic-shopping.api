@@ -2,7 +2,8 @@
   "extends": [
     "eslint:recommended",
     "plugin:node/recommended",
-    "node"
+    "node",
+    "airbnb-base"
   ],
   "settings": {
     "import/resolver": {
@@ -16,7 +17,10 @@
     "semi": 2,
     "node/no-missing-import": "off",
     "class-methods-use-this": "off",
-    "no-unused-vars": "off"
+    "no-unused-vars": "off",
+    "import/extensions": "off",
+    "no-underscore-dangle": "off",
+    "no-shadow": "off"
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {

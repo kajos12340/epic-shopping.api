@@ -1,12 +1,15 @@
-import { Router, Request, Response, NextFunction } from "express";
-import moment from "moment";
+import {
+  Router, Request, Response, NextFunction,
+} from 'express';
+import moment from 'moment';
 
-import IController from "../../interfaces/IController";
+import IController from '../../interfaces/IController';
 import JwtUtils from '../../utils/JwtUtils';
 import User from '../../models/User/User';
 
-class AuthController implements IController{
+class AuthController implements IController {
   public path = '/auth';
+
   public router = Router();
 
   constructor() {
@@ -41,17 +44,18 @@ class AuthController implements IController{
         login: user.login,
       });
     } catch (e) {
-      let message = "Could not log in the user!";
-      let statusCode = 400;
       if (e.message === 'NO_USER') {
-        statusCode = 401;
-        message = "There is no user for given data.";
+        next({
+          statusCode: 401,
+          data: e,
+          message: 'There is no user for given data.',
+        });
       }
 
       next({
-        statusCode,
+        statusCode: 400,
         data: e,
-        message,
+        message: 'Could not log in the user!',
       });
     }
   }
@@ -100,10 +104,12 @@ class AuthController implements IController{
 
   private async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const { login, password, email, repassword } = req.body;
+      const {
+        login, password, email, repassword,
+      } = req.body;
 
       if (password !== repassword) {
-        throw new Error("PASSWORD_DONT_MATCH");
+        throw new Error('PASSWORD_DONT_MATCH');
       }
 
       const user = await User.register({
@@ -111,20 +117,20 @@ class AuthController implements IController{
         login,
         email,
         registrationDate: moment().toDate(),
-        color: Math.floor(Math.random()*16777215).toString(16),
+        color: Math.floor(Math.random() * 16777215).toString(16),
       });
 
       if (user) {
         res.status(202).send();
       }
     } catch (e) {
-      let message = "Could not register the user!";
+      let message = 'Could not register the user!';
       let statusCode = 400;
       if (e.message === 'PASSWORD_DONT_MATCH') {
-        message = "Passwords must be the same.";
+        message = 'Passwords must be the same.';
       } else if (e.message.includes('E11000')) {
         statusCode = 409;
-        message = "User with given login or email already exists.";
+        message = 'User with given login or email already exists.';
       }
 
       next({

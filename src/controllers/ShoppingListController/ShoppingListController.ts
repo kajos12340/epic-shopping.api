@@ -1,13 +1,13 @@
-import { Server } from "socket.io";
+import { Server } from 'socket.io';
 import mongoose from 'mongoose';
-import moment from "moment";
+import moment from 'moment';
 
-import ISocketController from "../../interfaces/ISocketConroller";
-import JwtUtils from "../../utils/JwtUtils";
-import ShoppingList from "../../models/ShoppingList/ShoppingList";
-import SocketUtils from "../../utils/SocketUtils";
-import Product from "../../models/Product/Product";
-import User from "../../models/User/User";
+import ISocketController from '../../interfaces/ISocketConroller';
+import authorizedSocketMiddleware from '../../middlewares/AuthorizedSocketMiddleware';
+import ShoppingList from '../../models/ShoppingList/ShoppingList';
+import SocketUtils from '../../utils/SocketUtils';
+import Product from '../../models/Product/Product';
+import User from '../../models/User/User';
 
 class ShoppingListController implements ISocketController {
   public socketServer: Server;
@@ -19,14 +19,8 @@ class ShoppingListController implements ISocketController {
   }
 
   public initSocketActions() {
-    this.socketServer.use((socket, next) => {
-      const { token } = socket.handshake.auth as { token: string };
-      if (!JwtUtils.verifyToken(token)) {
-        return;
-      }
-      next();
-    });
-    this.socketServer.on("connection", (socket) => {
+    this.socketServer.use(authorizedSocketMiddleware);
+    this.socketServer.on('connection', (socket) => {
       socket.on('getLists', async () => {
         const lists = await ShoppingList.getSimpleLists();
         this.socketServer.emit('shoppingLists', lists);

@@ -1,10 +1,9 @@
 import express, { Application, RequestHandler, ErrorRequestHandler } from 'express';
 import mongoose from 'mongoose';
 
-import IController from "./interfaces/IController";
-
 import http from 'http';
-import {Server} from 'socket.io';
+import { Server } from 'socket.io';
+import IController from './interfaces/IController';
 
 interface IAppSettings {
   middlewares: RequestHandler[],
@@ -15,8 +14,11 @@ interface IAppSettings {
 
 class App {
   public server: any;
+
   public app: Application;
+
   public socketServer: Server;
+
   public port: number;
 
   constructor(appSettings: IAppSettings) {
@@ -24,8 +26,8 @@ class App {
     this.server = http.createServer(this.app);
     this.socketServer = new Server(this.server, {
       cors: {
-        origin: "*",
-      }
+        origin: '*',
+      },
     });
 
     this.port = process.env.PORT ? +process.env.PORT : 4000;
@@ -37,27 +39,25 @@ class App {
   }
 
   private setupMiddlewares(middlewares: RequestHandler[]) {
-    middlewares.forEach(middleware => {
-        this.app.use(middleware);
-      }
-    );
+    middlewares.forEach((middleware) => {
+      this.app.use(middleware);
+    });
   }
 
   private setupControllers(controllers: IController[]) {
-    controllers.forEach(controller => {
+    controllers.forEach((controller) => {
       this.app.use(controller.path, controller.router);
     });
   }
 
   private setupSocketControllers(socketControllers: any[]) {
-    socketControllers.forEach(Controller => new Controller(this.socketServer));
+    socketControllers.forEach((Controller) => new Controller(this.socketServer));
   }
 
   private setupErrorMiddleware(errorMiddlewares: ErrorRequestHandler[]) {
-    errorMiddlewares.forEach(middleware => {
-        this.app.use(middleware);
-      }
-    );
+    errorMiddlewares.forEach((middleware) => {
+      this.app.use(middleware);
+    });
   }
 
   public run() {
@@ -70,9 +70,9 @@ class App {
         console.log('Mongoose connected! App running on ', this.port);
 
         this.server.listen(this.port);
-      }).catch(err => {
-      console.log('Moongoose connection error: ', err);
-    });
+      }).catch((err) => {
+        console.log('Moongoose connection error: ', err);
+      });
   }
 }
 

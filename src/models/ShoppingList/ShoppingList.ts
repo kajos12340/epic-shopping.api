@@ -1,6 +1,6 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
-import {IUserModel} from "../User/User";
-import {IProduct} from "../Product/Product";
+import mongoose, { Schema, Document, Model } from 'mongoose';
+import { IUserModel } from '../User/User';
+import { IProduct } from '../Product/Product';
 
 export interface IShoppingList {
   creationDate: Date,
@@ -45,7 +45,7 @@ const shoppingListSchema = new Schema<IShoppingListDocument>({
   },
 });
 
-shoppingListSchema.statics.getProducts = async function(listId) {
+shoppingListSchema.statics.getProducts = async function (listId) {
   const list = await this
     .findById(listId)
     .populate('products')
@@ -54,11 +54,11 @@ shoppingListSchema.statics.getProducts = async function(listId) {
   return list.products;
 };
 
-shoppingListSchema.statics.closeList = function(id) {
+shoppingListSchema.statics.closeList = function (id) {
   return this.findByIdAndUpdate(id, { isActive: false });
 };
 
-shoppingListSchema.statics.getSimpleLists = async function() {
+shoppingListSchema.statics.getSimpleLists = async function () {
   const lists = await this
     .find()
     .populate('author', 'login')
@@ -66,13 +66,13 @@ shoppingListSchema.statics.getSimpleLists = async function() {
     .select(['creationDate', 'author', 'name', 'isActive'])
     .lean();
 
-  return lists.map(list => ({
+  return lists.map((list) => ({
     ...list,
     productsNumber: list.products?.length,
   }));
 };
 
-shoppingListSchema.statics.getSimpleList = async function(id) {
+shoppingListSchema.statics.getSimpleList = async function (id) {
   const list = await this
     .findById(id)
     .populate('author', 'login')

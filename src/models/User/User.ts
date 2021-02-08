@@ -1,8 +1,8 @@
-import mongose, { Schema, Document, Model } from "mongoose";
+import mongose, { Schema, Document, Model } from 'mongoose';
 import Crypto from 'crypto-js';
-import moment from "moment";
+import moment from 'moment';
 
-import {IMessage} from "../Message/Message";
+import { IMessage } from '../Message/Message';
 
 interface ISimpleUser {
   login: string,
@@ -64,35 +64,35 @@ const userSchema = new Schema<IUserDocument>({
   color: {
     required: true,
     type: String,
-  }
+  },
 });
 
-userSchema.statics.logIn = function(login: string, password: string): IUser {
-    const hashedPassword = Crypto.SHA256(password).toString(Crypto.enc.Base64);
-    return this.findOneAndUpdate({
-      login,
-      password: hashedPassword,
-    }, { lastLoginDate: moment().toDate() });
+userSchema.statics.logIn = function (login: string, password: string): IUser {
+  const hashedPassword = Crypto.SHA256(password).toString(Crypto.enc.Base64);
+  return this.findOneAndUpdate({
+    login,
+    password: hashedPassword,
+  }, { lastLoginDate: moment().toDate() });
 };
 
-userSchema.statics.register = function(userData: IUser): Promise<IUserDocument> {
+userSchema.statics.register = function (userData: IUser): Promise<IUserDocument> {
   const hashedPassword = Crypto.SHA256(userData.password).toString(Crypto.enc.Base64);
 
   const user = new this({
     ...userData,
-      password: hashedPassword,
+    password: hashedPassword,
   });
 
   return user.save();
 };
 
-userSchema.statics.getAllUserBasicData = async function(): Promise<ISimpleUser[]> {
+userSchema.statics.getAllUserBasicData = async function (): Promise<ISimpleUser[]> {
   let users = await this
     .find()
-    .collation({locale: "en" })
+    .collation({ locale: 'en' })
     .sort('login')
     .lean();
-  users = users.map(user => ({
+  users = users.map((user) => ({
     login: user.login,
     registrationDate: moment(user.registrationDate).format('MM.DD.YYYY HH:mm'),
     isConfirmed: user.isConfirmed,

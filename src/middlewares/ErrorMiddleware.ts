@@ -8,10 +8,8 @@ interface Error {
 
 const errorMiddleware = (error: Error, req: Request, res: Response, next: NextFunction) => {
   console.log('Error occured!', error, req.path);
-  const status = error.statusCode || 500;
-  const message = error.message;
-  const data = error.data || '';
-  res.status(status).json({ message, data: data.toString() });
+  const { statusCode = 500, message, data = '' } = error;
+  res.status(statusCode).json({ message, data: data.toString() });
   next();
 };
 

@@ -1,6 +1,6 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
-import UnitEnum from "../../enums/UnitEnum";
-import ShoppingList from "../ShoppingList/ShoppingList";
+import mongoose, { Schema, Document, Model } from 'mongoose';
+import UnitEnum from '../../enums/UnitEnum';
+import ShoppingList from '../ShoppingList/ShoppingList';
 
 export interface IProduct extends Document{
   shoppingList: string,
@@ -19,7 +19,7 @@ export interface IProductModel extends Model<IProduct>{
 const productSchema = new Schema<IProduct>({
   shoppingList: {
     type: Schema.Types.ObjectId,
-    ref: 'ShoppingList'
+    ref: 'ShoppingList',
   },
   name: {
     type: String,
@@ -40,7 +40,7 @@ const productSchema = new Schema<IProduct>({
     type: Boolean,
     required: true,
     default: false,
-  }
+  },
 });
 
 productSchema.statics.updateInCartStatus = function (productId, inCartStatus) {
@@ -56,15 +56,15 @@ productSchema.statics.addNewProduct = async function (data) {
   });
   const savedProduct = await product.save();
   await ShoppingList.findByIdAndUpdate(data.shoppingListId, {
-    $addToSet: { products: savedProduct._id }
+    $addToSet: { products: savedProduct._id },
   });
 };
 
-productSchema.statics.removeProduct = async function(listId, productId) {
+productSchema.statics.removeProduct = async function (listId, productId) {
   this.findByIdAndDelete(productId);
 
   await ShoppingList.findByIdAndUpdate(listId, {
-    $pull: { products: productId }
+    $pull: { products: productId },
   });
 };
 

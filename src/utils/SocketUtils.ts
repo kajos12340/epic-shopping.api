@@ -1,6 +1,6 @@
-import { Socket } from "socket.io";
+import { Socket } from 'socket.io';
 
-import JwtUtils from "./JwtUtils";
+import JwtUtils from './JwtUtils';
 
 class SocketUtils {
   public static getUserId(socket: Socket) {

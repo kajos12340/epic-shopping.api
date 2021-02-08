@@ -1,7 +1,7 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Schema, Document, Model } from 'mongoose';
 import moment from 'moment';
 
-import User, { IUserModel } from "../User/User";
+import User, { IUserModel } from '../User/User';
 
 export interface IMessage {
   date: Date,
@@ -30,7 +30,7 @@ const messageSchema = new Schema<IMessageDocument>({
     type: String,
     required: true,
     maxlength: 150,
-  }
+  },
 });
 
 messageSchema.statics.removeAllFromBeforeToday = function (): Promise<void> {
@@ -40,7 +40,9 @@ messageSchema.statics.removeAllFromBeforeToday = function (): Promise<void> {
   return this.deleteMany({ date: { $lte: parsedDate } });
 };
 
-messageSchema.statics.getMessagesWithAuthors = async function (currentUserId: string): Promise<IMessageDocument[]> {
+messageSchema.statics.getMessagesWithAuthors = async function (
+  currentUserId: string,
+): Promise<IMessageDocument[]> {
   const data = await this.find()
     .populate('author', 'login color')
     .lean();
